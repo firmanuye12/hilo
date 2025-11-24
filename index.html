@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice Remote Control - BANDUNG</title>
+    <title>Server Under Attack - Network Compromised</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
@@ -12,458 +16,674 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #7c5bc9 0%, #8b6fd9 100%);
+            font-family: 'Space Mono', monospace;
+            background: hsl(220, 25%, 8%);
+            color: hsl(180, 100%, 95%);
+            overflow-x: hidden;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
         }
 
         .container {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            max-width: 448px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 10;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
+        /* Data Stream Background */
+        .data-stream {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.2;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1;
         }
 
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #7c5bc9;
-            margin-bottom: 8px;
+        .stream-column {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.75rem;
+            color: hsl(180, 95%, 45%);
+            animation: streamFlow 8s linear infinite;
         }
 
-        .subtitle {
-            font-size: 14px;
-            color: #666;
+        @keyframes streamFlow {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100vh); }
         }
 
-        .time-box {
-            background: #3b9ff3;
-            color: white;
-            border-radius: 8px;
-            padding: 16px;
+        /* Header */
+        header {
+            text-center: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .alert-title {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .status-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px;
-            margin-bottom: 24px;
-        }
-
-        .status-indicator {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #22c55e;
+            gap: 1rem;
+            margin-bottom: 1rem;
             animation: pulse 2s infinite;
         }
 
-        .status-indicator.disabled {
-            background: #9ca3af;
-            animation: none;
+        .alert-icon {
+            width: 3rem;
+            height: 3rem;
+            color: hsl(0, 85%, 60%);
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .status-text {
-            color: #22c55e;
-            font-weight: 600;
-        }
-
-        .status-text.disabled {
-            color: #9ca3af;
-        }
-
-        .input-display {
-            width: 100%;
-            height: 56px;
-            border: 2px solid #7c5bc9;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 32px;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 16px;
-            padding: 8px;
-            background: white;
-        }
-
-        .input-display.disabled {
-            opacity: 0.5;
-            border-color: #d1d5db;
-        }
-
-        .number-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .number-btn {
-            height: 64px;
-            border: none;
-            border-radius: 8px;
-            background: #7c5bc9;
-            color: white;
-            font-size: 24px;
+        h1 {
+            font-size: 2.5rem;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
+            color: hsl(0, 85%, 60%);
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+            animation: glitch 0.5s infinite;
         }
 
-        .number-btn:hover:not(:disabled) {
-            background: #6b4ab8;
-            transform: scale(1.05);
+        .subtitle {
+            font-size: 1.25rem;
+            color: hsl(0, 85%, 60%);
+            margin: 0.5rem 0;
+            animation: flicker 3s linear infinite;
         }
 
-        .number-btn:active:not(:disabled) {
-            transform: scale(0.95);
+        .status-bar {
+            font-size: 0.875rem;
+            color: hsl(180, 20%, 65%);
+            margin-top: 0.5rem;
         }
 
-        .number-btn:disabled {
-            background: #d1d5db;
-            cursor: not-allowed;
-            opacity: 0.6;
+        .status-critical {
+            color: hsl(0, 85%, 60%);
+            font-weight: bold;
         }
 
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .action-btn {
-            height: 56px;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .clear-btn {
-            background: #ef4444;
-            color: white;
-        }
-
-        .clear-btn:hover:not(:disabled) {
-            background: #dc2626;
-        }
-
-        .send-btn {
-            background: #22c55e;
-            color: white;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            background: #16a34a;
-        }
-
-        .action-btn:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-
-        .action-btn:disabled {
-            background: #d1d5db;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        .result-box {
+        /* Attack Visualizer */
+        .attack-visualizer {
+            position: relative;
             width: 100%;
-            height: 56px;
-            background: rgba(34, 197, 94, 0.1);
-            border: 2px solid #22c55e;
-            border-radius: 8px;
+            height: 12rem;
+            background: hsla(220, 20%, 12%, 0.5);
+            border-radius: 0.5rem;
+            border: 1px solid hsla(0, 85%, 60%, 0.3);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            animation: glowPulse 2s infinite;
+        }
+
+        .attack-header {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 2;
+        }
+
+        .threat-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: hsl(0, 85%, 60%);
+            animation: pulse 2s infinite;
+        }
+
+        .attack-dot {
+            position: absolute;
+            width: 1.5rem;
+            height: 1.5rem;
+            animation: attackBurst 2s ease-out forwards;
+        }
+
+        @keyframes attackBurst {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        /* Network Status */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: hsl(180, 95%, 45%);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            background: hsl(0, 85%, 60%);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: hsl(220, 20%, 12%);
+            border: 1px solid hsl(220, 20%, 18%);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .metric-card.critical {
+            border-color: hsl(0, 85%, 60%);
+            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: hsl(220, 15%, 20%);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: hsl(180, 95%, 45%);
+            transition: width 0.5s;
+        }
+
+        .progress-fill.critical {
+            background: hsl(0, 85%, 60%);
+        }
+
+        /* Server Rack */
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .server-card {
+            background: hsl(220, 20%, 12%);
+            border: 2px solid hsl(220, 20%, 18%);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .server-card.attacked {
+            background: hsla(0, 85%, 60%, 0.2);
+            border-color: hsl(0, 85%, 60%);
+            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
+            animation: shake 0.5s infinite;
+        }
+
+        .server-icon {
+            width: 3rem;
+            height: 3rem;
+            margin: 0 auto 0.5rem;
+            color: hsl(180, 95%, 45%);
+        }
+
+        .server-card.attacked .server-icon {
+            color: hsl(0, 85%, 60%);
+            animation: pulse 2s infinite;
+        }
+
+        .server-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .server-status {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 600;
-            color: #22c55e;
-            margin-bottom: 16px;
-            display: none;
+            gap: 0.5rem;
+            font-size: 0.75rem;
         }
 
-        .result-box.show {
+        .alert-badge {
+            position: absolute;
+            top: -0.5rem;
+            right: -0.5rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            color: hsl(0, 85%, 60%);
+            animation: pulse 2s infinite;
+        }
+
+        /* Alert System */
+        .alert-system {
+            background: hsl(220, 20%, 12%);
+            border: 2px solid hsla(0, 85%, 60%, 0.5);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        .alert-header {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
         }
 
-        .footer {
+        .alert-live {
+            color: hsl(0, 85%, 60%);
+            font-size: 0.875rem;
+            animation: flicker 3s linear infinite;
+        }
+
+        .alerts-container {
+            max-height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .alert-item.critical {
+            background: hsla(0, 85%, 60%, 0.1);
+            border: 1px solid hsla(0, 85%, 60%, 0.5);
+        }
+
+        .alert-item.warning {
+            background: hsla(30, 100%, 50%, 0.1);
+            border: 1px solid hsla(30, 100%, 50%, 0.5);
+        }
+
+        footer {
             text-align: center;
-            font-size: 12px;
-            color: #666;
-            padding-top: 16px;
-            border-top: 1px solid #e5e7eb;
+            margin-top: 3rem;
+            color: hsl(180, 20%, 65%);
+            font-size: 0.875rem;
+            animation: pulse 2s infinite;
         }
 
-        .footer p {
-            margin: 4px 0;
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1f2937;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            display: none;
-            z-index: 1000;
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
         }
 
-        .toast.show {
-            display: block;
-            animation: slideUp 0.3s ease;
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            41% { opacity: 1; }
+            42% { opacity: 0.8; }
+            43% { opacity: 1; }
+            45% { opacity: 0.8; }
+            46% { opacity: 1; }
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translateX(-50%) translateY(100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        .toast.success {
-            background: #22c55e;
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .toast.error {
-            background: #ef4444;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .toast.warning {
-            background: #f59e0b;
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.6); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.5rem; }
+            .alert-icon { width: 2rem; height: 2rem; }
+            .subtitle { font-size: 1rem; }
+            .attack-visualizer { height: 8rem; }
+            .container { padding: 1rem; }
+            .server-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .metrics-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <div class="data-stream" id="dataStream"></div>
+
     <div class="container">
-        <div class="header">
-            <h1 class="title">BANDUNG SPORT</h1>
-            <p class="subtitle">Versi Monitored - Target: Siap</p>
+        <header>
+            <div class="alert-title">
+                <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <h1>CRITICAL ALERT</h1>
+                <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" style="text-decoration: line-through;"/>
+                </svg>
+            </div>
+            <p class="subtitle">SERVER INFRASTRUCTURE COMPROMISED</p>
+            <div class="status-bar">
+                NETWORK STATUS: <span class="status-critical">DEGRADED</span> | 
+                SECURITY LEVEL: <span class="status-critical">CRITICAL</span>
+            </div>
+        </header>
+
+        <div class="attack-visualizer" id="attackViz">
+            <div class="attack-header">
+                <svg class="threat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span style="font-size: 0.875rem; font-weight: bold; color: hsl(0, 85%, 60%);">
+                    ACTIVE THREATS
+                </span>
+            </div>
         </div>
 
-        <div class="time-box">
-            <span></span>
-            <span id="time">JAM: 00:00:00</span>
-        </div>
+        <section>
+            <h2 class="section-title">
+                <span class="status-dot"></span>
+                NETWORK METRICS
+            </h2>
+            <div class="metrics-grid">
+                <div class="metric-card" id="bandwidthCard">
+                    <div class="metric-header">
+                        <span style="font-weight: bold; font-size: 0.875rem;">Bandwidth</span>
+                    </div>
+                    <div class="metric-value" id="bandwidth">100%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="bandwidthBar" style="width: 100%"></div>
+                    </div>
+                </div>
 
-        <div class="status-box">
-            <div class="status-indicator" id="statusIndicator"></div>
-            <span class="status-text" id="statusText">Remot Terhubung</span>
-        </div>
+                <div class="metric-card" id="latencyCard">
+                    <div class="metric-header">
+                        <span style="font-weight: bold; font-size: 0.875rem;">Latency</span>
+                    </div>
+                    <div class="metric-value" id="latency">12ms</div>
+                    <div style="font-size: 0.75rem; color: hsl(142, 76%, 45%); margin-top: 0.5rem;" id="latencyStatus">NORMAL</div>
+                </div>
 
-        <input type="text" id="display" class="input-display" placeholder="Masukkan angka" readonly maxlength="3">
+                <div class="metric-card" id="packetLossCard">
+                    <div class="metric-header">
+                        <span style="font-weight: bold; font-size: 0.875rem;">Packet Loss</span>
+                    </div>
+                    <div class="metric-value" id="packetLoss">0%</div>
+                    <div style="font-size: 0.75rem; color: hsl(142, 76%, 45%); margin-top: 0.5rem;" id="packetLossStatus">ACCEPTABLE</div>
+                </div>
+            </div>
+        </section>
 
-        <div class="number-grid">
-            <button class="number-btn" onclick="addNumber(1)">1</button>
-            <button class="number-btn" onclick="addNumber(2)">2</button>
-            <button class="number-btn" onclick="addNumber(3)">3</button>
-            <button class="number-btn" onclick="addNumber(4)">4</button>
-            <button class="number-btn" onclick="addNumber(5)">5</button>
-            <button class="number-btn" onclick="addNumber(6)">6</button>
-        </div>
+        <section>
+            <h2 class="section-title">
+                <span class="status-dot"></span>
+                SERVER STATUS
+            </h2>
+            <div class="server-grid" id="serverGrid"></div>
+        </section>
 
-        <div class="action-grid">
-            <button class="action-btn clear-btn" onclick="clearInput()">Hapus</button>
-            <button class="action-btn send-btn" onclick="sendData()">Kirim</button>
-        </div>
+        <section>
+            <div class="alert-system">
+                <div class="alert-header">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <svg style="width: 1.5rem; height: 1.5rem; color: hsl(0, 85%, 60%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01"/>
+                        </svg>
+                        <span style="font-size: 1.125rem; font-weight: bold; color: hsl(0, 85%, 60%);">
+                            SECURITY ALERTS
+                        </span>
+                    </div>
+                    <span class="alert-live">● LIVE</span>
+                </div>
+                <div class="alerts-container" id="alertsContainer"></div>
+            </div>
+        </section>
 
-        <div id="result" class="result-box">
-            Data Diterima: <span id="lastSent"></span>
-        </div>
-
-        <div class="footer">
-            <p></p>
-            <p></p>
-            <p style="font-weight: 600;"></p>
-        </div>
+        <footer>
+            <p>INCIDENT RESPONSE TEAM NOTIFIED | CONTAINMENT PROTOCOLS ACTIVE</p>
+        </footer>
     </div>
 
-    <div id="toast" class="toast"></div>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-
     <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            databaseURL: "https://hilo-6b84b-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        let inputValue = '';
-        let isEnabled = true;
-        const display = document.getElementById('display');
-        const resultBox = document.getElementById('result');
-        const lastSentSpan = document.getElementById('lastSent');
-        const toast = document.getElementById('toast');
-        const statusIndicator = document.getElementById('statusIndicator');
-        const statusText = document.getElementById('statusText');
-
-        // Listen to status changes from Firebase
-        database.ref('dicersd/status').on('value', (snapshot) => {
-            const status = snapshot.val();
-            isEnabled = status !== null ? status.enabled : true;
-            updateUIStatus();
-        });
-
-        function updateUIStatus() {
-            const buttons = document.querySelectorAll('.number-btn, .action-btn');
+        // Data Stream Animation
+        function createDataStream() {
+            const stream = document.getElementById('dataStream');
+            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const streamCount = window.innerWidth < 768 ? 8 : 15;
             
-            if (isEnabled) {
-                statusIndicator.classList.remove('disabled');
-                statusText.classList.remove('disabled');
-                statusText.textContent = 'Remot Terhubung';
-                display.classList.remove('disabled');
-                buttons.forEach(btn => btn.disabled = false);
+            for (let i = 0; i < streamCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'stream-column';
+                column.style.animationDelay = `${i * 0.3}s`;
+                
+                for (let j = 0; j < 20; j++) {
+                    const char = document.createElement('span');
+                    char.textContent = characters[Math.floor(Math.random() * characters.length)];
+                    column.appendChild(char);
+                }
+                
+                stream.appendChild(column);
+            }
+
+            setInterval(() => {
+                document.querySelectorAll('.stream-column span').forEach(span => {
+                    span.textContent = characters[Math.floor(Math.random() * characters.length)];
+                });
+            }, 150);
+        }
+
+        // Attack Visualizer
+        function createAttack() {
+            const viz = document.getElementById('attackViz');
+            const attack = document.createElement('div');
+            attack.className = 'attack-dot';
+            attack.style.left = `${Math.random() * 100}%`;
+            attack.style.top = `${Math.random() * 100}%`;
+            attack.innerHTML = '<svg style="width: 100%; height: 100%; color: hsl(0, 85%, 60%);" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
+            
+            viz.appendChild(attack);
+            setTimeout(() => attack.remove(), 2000);
+        }
+
+        // Network Metrics
+        function updateMetrics() {
+            const bandwidth = Math.max(0, Math.random() * 100);
+            const latency = 12 + Math.random() * 500;
+            const packetLoss = Math.floor(Math.random() * 100);
+
+            document.getElementById('bandwidth').textContent = `${bandwidth.toFixed(1)}%`;
+            document.getElementById('bandwidthBar').style.width = `${bandwidth}%`;
+            
+            const bandwidthCard = document.getElementById('bandwidthCard');
+            const bandwidthBar = document.getElementById('bandwidthBar');
+            if (bandwidth < 30) {
+                bandwidthCard.classList.add('critical');
+                bandwidthBar.classList.add('critical');
             } else {
-                statusIndicator.classList.add('disabled');
-                statusText.classList.add('disabled');
-                statusText.textContent = 'Remot Terputus';
-                display.classList.add('disabled');
-                buttons.forEach(btn => btn.disabled = true);
-                showToast('Aplikasi dimatikan dari monitoring', 'warning');
-            }
-        }
-
-        // Update time
-        function updateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('time').textContent = `Waktu Tersisa: ${hours}:${minutes}:${seconds}`;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        function addNumber(num) {
-            if (!isEnabled) {
-                showToast('Aplikasi sedang dimatikan', 'error');
-                return;
+                bandwidthCard.classList.remove('critical');
+                bandwidthBar.classList.remove('critical');
             }
 
-            if (inputValue.length >= 3) {
-                inputValue = num.toString();
+            document.getElementById('latency').textContent = `${latency.toFixed(0)}ms`;
+            const latencyStatus = document.getElementById('latencyStatus');
+            const latencyCard = document.getElementById('latencyCard');
+            if (latency > 200) {
+                latencyStatus.textContent = 'CRITICAL DELAY';
+                latencyStatus.style.color = 'hsl(30, 100%, 50%)';
+                latencyCard.classList.add('critical');
             } else {
-                inputValue += num;
+                latencyStatus.textContent = 'NORMAL';
+                latencyStatus.style.color = 'hsl(142, 76%, 45%)';
+                latencyCard.classList.remove('critical');
             }
-            display.value = inputValue;
+
+            document.getElementById('packetLoss').textContent = `${packetLoss}%`;
+            const packetLossStatus = document.getElementById('packetLossStatus');
+            const packetLossCard = document.getElementById('packetLossCard');
+            if (packetLoss > 50) {
+                packetLossStatus.textContent = 'SEVERE LOSS';
+                packetLossStatus.style.color = 'hsl(0, 85%, 60%)';
+                packetLossCard.classList.add('critical');
+            } else {
+                packetLossStatus.textContent = 'ACCEPTABLE';
+                packetLossStatus.style.color = 'hsl(142, 76%, 45%)';
+                packetLossCard.classList.remove('critical');
+            }
         }
 
-        function clearInput() {
-            if (!isEnabled) return;
-            inputValue = '';
-            display.value = '';
-            showToast('Input dibersihkan', 'success');
+        // Server Rack
+        const attackedServers = new Set();
+
+        function createServers() {
+            const grid = document.getElementById('serverGrid');
+            
+            for (let i = 0; i < 6; i++) {
+                const server = document.createElement('div');
+                server.className = 'server-card';
+                server.id = `server-${i}`;
+                server.innerHTML = `
+                    <svg class="server-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                    </svg>
+                    <p class="server-name">SERVER-${String(i + 1).padStart(2, '0')}</p>
+                    <div class="server-status">
+                        <svg style="width: 1rem; height: 1rem; color: hsl(142, 76%, 45%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+                        </svg>
+                        <span style="font-size: 0.75rem; color: hsl(142, 76%, 45%);">ONLINE</span>
+                    </div>
+                `;
+                grid.appendChild(server);
+            }
         }
 
-        function sendData() {
-            if (!isEnabled) {
-                showToast('ERROR', 'error');
-                return;
+        function attackRandomServer() {
+            const serverIndex = Math.floor(Math.random() * 6);
+            const server = document.getElementById(`server-${serverIndex}`);
+            
+            if (attackedServers.has(serverIndex)) {
+                attackedServers.delete(serverIndex);
+                server.classList.remove('attacked');
+                server.querySelector('.server-status').innerHTML = `
+                    <svg style="width: 1rem; height: 1rem; color: hsl(142, 76%, 45%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; color: hsl(142, 76%, 45%);">ONLINE</span>
+                `;
+                const badge = server.querySelector('.alert-badge');
+                if (badge) badge.remove();
+            } else {
+                attackedServers.add(serverIndex);
+                server.classList.add('attacked');
+                server.querySelector('.server-status').innerHTML = `
+                    <svg style="width: 1rem; height: 1rem; color: hsl(0, 85%, 60%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" style="text-decoration: line-through;"/>
+                    </svg>
+                    <span style="font-size: 0.75rem; color: hsl(0, 85%, 60%);">COMPROMISED</span>
+                `;
+                server.innerHTML += `
+                    <svg class="alert-badge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                ` + server.innerHTML;
             }
-
-            if (inputValue.length !== 3) {
-                showToast('Masukkan 3 angka (1-6)', 'error');
-                return;
-            }
-
-            const numbers = inputValue.split('');
-            const isValid = numbers.every(n => {
-                const num = parseInt(n);
-                return num >= 1 && num <= 6;
-            });
-
-            if (!isValid) {
-                showToast('Angka harus antara 1-6', 'error');
-                return;
-            }
-
-            // Kirim ke Firebase
-            const timestamp = new Date().toISOString();
-            const dataToSend = {
-                value: inputValue,
-                timestamp: timestamp,
-                timestampDisplay: new Date().toLocaleString('id-ID')
-            };
-
-            Promise.all([
-                database.ref('dicersd/results').set(inputValue),
-                database.ref('dicersd/history').push(dataToSend)
-            ])
-            .then(() => {
-                lastSentSpan.textContent = inputValue;
-                resultBox.classList.add('show');
-                showToast(`Data terkirim: ${inputValue}`, 'success');
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                showToast('Gagal mengirim data', 'error');
-            });
         }
 
-        function showToast(message, type = 'success') {
-            toast.textContent = message;
-            toast.className = `toast show ${type}`;
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        // Alert System
+        const alertMessages = [
+            { type: 'critical', message: 'DDOS attack detected on gateway server' },
+            { type: 'warning', message: 'Unusual traffic pattern from IP 45.142.*.**' },
+            { type: 'critical', message: 'Multiple failed authentication attempts' },
+            { type: 'warning', message: 'Database connection timeout - retry in progress' },
+            { type: 'critical', message: 'Firewall rules breached - isolating subnet' },
+            { type: 'warning', message: 'CPU usage at 98% on SERVER-03' },
+        ];
+
+        function addAlert() {
+            const container = document.getElementById('alertsContainer');
+            const alert = alertMessages[Math.floor(Math.random() * alertMessages.length)];
+            const time = new Date().toLocaleTimeString();
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-item ${alert.type}`;
+            alertDiv.innerHTML = `
+                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: 0.125rem; color: ${alert.type === 'critical' ? 'hsl(0, 85%, 60%)' : 'hsl(30, 100%, 50%)'};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <p style="font-size: 0.875rem; color: ${alert.type === 'critical' ? 'hsl(0, 85%, 60%)' : 'hsl(30, 100%, 50%)'};">
+                    [${time}] ${alert.message}
+                </p>
+            `;
+            
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            if (container.children.length > 5) {
+                container.removeChild(container.lastChild);
+            }
         }
 
-        // Enter key support
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendData();
-            }
-        });
+        // Initialize
+        createDataStream();
+        createServers();
 
-        // Initialize status
-        database.ref('dicersd/status').once('value', (snapshot) => {
-            if (!snapshot.exists()) {
-                database.ref('dicersd/status').set({ enabled: true });
-            }
-        });
+        // Start animations
+        setInterval(createAttack, 800);
+        setInterval(updateMetrics, 2000);
+        setInterval(attackRandomServer, 1500);
+        setInterval(addAlert, 3000);
+
+        // Initial updates
+        updateMetrics();
+        addAlert();
     </script>
 </body>
 </html>
-
