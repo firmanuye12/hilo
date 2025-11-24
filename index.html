@@ -1,689 +1,423 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Under Attack - Network Compromised</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Alert - Hacker Attack Detected</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Space Mono', monospace;
-            background: hsl(220, 25%, 8%);
-            color: hsl(180, 100%, 95%);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #020617, #020617 40%, #000000 100%);
+      color: #e5e7eb;
+      overflow: hidden;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1.5rem;
-            position: relative;
-            z-index: 10;
-        }
+    .scan-lines {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.5;
+    }
 
-        /* Data Stream Background */
-        .data-stream {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: 0.2;
-            overflow: hidden;
-            display: flex;
-            justify-content: space-around;
-            z-index: 1;
-        }
+    .wrapper {
+      text-align: center;
+      padding: 32px 20px;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
 
-        .stream-column {
-            display: flex;
-            flex-direction: column;
-            font-size: 0.75rem;
-            color: hsl(180, 95%, 45%);
-            animation: streamFlow 8s linear infinite;
-        }
+    /* Matrix style falling code background */
+    .matrix {
+      position: fixed;
+      inset: 0;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      color: #22c55e;
+      opacity: 0.15;
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+    }
 
-        @keyframes streamFlow {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(100vh); }
-        }
+    @keyframes drift {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
 
-        /* Header */
-        header {
-            text-center: center;
-            margin-bottom: 3rem;
-            animation: fadeIn 0.5s ease-out;
-        }
+    .matrix-inner {
+      position: absolute;
+      inset: 0;
+      animation: drift 15s linear infinite;
+    }
 
-        .alert-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            animation: pulse 2s infinite;
-        }
+    .card {
+      position: relative;
+      background: radial-gradient(circle at top, #020617, #020617 50%, #020617);
+      border-radius: 24px;
+      padding: 28px 22px 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      overflow: hidden;
+    }
 
-        .alert-icon {
-            width: 3rem;
-            height: 3rem;
-            color: hsl(0, 85%, 60%);
-        }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: conic-gradient(
+        from 0deg,
+        rgba(34, 197, 94, 0.2),
+        transparent,
+        transparent,
+        rgba(34, 197, 94, 0.3),
+        transparent,
+        transparent
+      );
+      opacity: 0.7;
+      filter: blur(6px);
+      z-index: -1;
+      animation: borderGlow 4s linear infinite;
+    }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: hsl(0, 85%, 60%);
-            text-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
-            animation: glitch 0.5s infinite;
-        }
+    @keyframes borderGlow {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-        .subtitle {
-            font-size: 1.25rem;
-            color: hsl(0, 85%, 60%);
-            margin: 0.5rem 0;
-            animation: flicker 3s linear infinite;
-        }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.5);
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.3);
+      margin-bottom: 14px;
+      animation: blinkBadge 1.2s steps(2, start) infinite;
+    }
 
-        .status-bar {
-            font-size: 0.875rem;
-            color: hsl(180, 20%, 65%);
-            margin-top: 0.5rem;
-        }
+    @keyframes blinkBadge {
+      50% { opacity: 0.35; }
+    }
 
-        .status-critical {
-            color: hsl(0, 85%, 60%);
-            font-weight: bold;
-        }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f97373;
+      box-shadow: 0 0 12px #f97373;
+    }
 
-        /* Attack Visualizer */
-        .attack-visualizer {
-            position: relative;
-            width: 100%;
-            height: 12rem;
-            background: hsla(220, 20%, 12%, 0.5);
-            border-radius: 0.5rem;
-            border: 1px solid hsla(0, 85%, 60%, 0.3);
-            overflow: hidden;
-            margin-bottom: 2rem;
-            animation: glowPulse 2s infinite;
-        }
+    .icon {
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      border: 3px solid rgba(239, 68, 68, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: pulse 1.4s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(127, 29, 29, 0.8), transparent 70%);
+    }
 
-        .attack-header {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 2;
-        }
+    .icon-inner {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      border: 2px solid #fecaca;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-        .threat-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            color: hsl(0, 85%, 60%);
-            animation: pulse 2s infinite;
-        }
+    /* Gembok dan tengkorak minimalis (skull-ish warning) */
+    .lock {
+      position: relative;
+      width: 26px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #fecaca;
+      box-shadow: 0 0 8px rgba(248, 250, 252, 0.2);
+    }
 
-        .attack-dot {
-            position: absolute;
-            width: 1.5rem;
-            height: 1.5rem;
-            animation: attackBurst 2s ease-out forwards;
-        }
+    .lock::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #fecaca;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: transparent;
+    }
 
-        @keyframes attackBurst {
-            0% { transform: scale(0); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-            100% { transform: scale(0); opacity: 0; }
-        }
+    .lock::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 10px;
+      border-radius: 999px;
+      border: 2px solid #fecaca;
+      border-top: none;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-        /* Network Status */
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: hsl(180, 95%, 45%);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .scan-bar {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(34, 197, 94, 0.5),
+        transparent
+      );
+      mix-blend-mode: screen;
+      animation: scan 2.6s linear infinite;
+      opacity: 0.4;
+    }
 
-        .status-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            background: hsl(0, 85%, 60%);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
+    @keyframes scan {
+      0%   { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
 
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+      }
+      70% {
+        transform: scale(1.06);
+        box-shadow: 0 0 0 14px rgba(248, 113, 113, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(248, 113, 113, 0);
+      }
+    }
 
-        .metric-card {
-            background: hsl(220, 20%, 12%);
-            border: 1px solid hsl(220, 20%, 18%);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
+    .code {
+      font-size: 30px;
+      letter-spacing: 0.4em;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      color: #f97373;
+      text-indent: 0.4em;
+    }
 
-        .metric-card.critical {
-            border-color: hsl(0, 85%, 60%);
-            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
-        }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #f9fafb;
+    }
 
-        .metric-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
+    .subtitle {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: #6ee7b7;
+      margin-bottom: 12px;
+    }
 
-        .metric-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-        }
+    .message {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #9ca3af;
+      margin-bottom: 18px;
+    }
 
-        .metric-value {
-            font-size: 1.75rem;
-            font-weight: bold;
-            margin: 0.5rem 0;
-        }
+    .log-box {
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+      text-align: left;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      padding: 10px 12px;
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: #22c55e;
+      max-height: 90px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
 
-        .progress-bar {
-            width: 100%;
-            height: 0.5rem;
-            background: hsl(220, 15%, 20%);
-            border-radius: 1rem;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
+    .log-line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.9;
+      animation: logBlink 3s linear infinite;
+    }
 
-        .progress-fill {
-            height: 100%;
-            background: hsl(180, 95%, 45%);
-            transition: width 0.5s;
-        }
+    .log-line:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+    .log-line:nth-child(3) {
+      animation-delay: 1s;
+    }
 
-        .progress-fill.critical {
-            background: hsl(0, 85%, 60%);
-        }
+    @keyframes logBlink {
+      0%, 80%, 100% { opacity: 0.18; }
+      30%, 60%      { opacity: 1; }
+    }
 
-        /* Server Rack */
-        .server-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .cursor {
+      display: inline-block;
+      width: 7px;
+      background: #22c55e;
+      margin-left: 3px;
+      animation: cursorBlink 1s steps(2, start) infinite;
+    }
 
-        .server-card {
-            background: hsl(220, 20%, 12%);
-            border: 2px solid hsl(220, 20%, 18%);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s;
-            position: relative;
-        }
+    @keyframes cursorBlink {
+      0%, 50% { opacity: 1; }
+      51%,100%{ opacity: 0; }
+    }
 
-        .server-card.attacked {
-            background: hsla(0, 85%, 60%, 0.2);
-            border-color: hsl(0, 85%, 60%);
-            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
-            animation: shake 0.5s infinite;
-        }
+    .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-        .server-icon {
-            width: 3rem;
-            height: 3rem;
-            margin: 0 auto 0.5rem;
-            color: hsl(180, 95%, 45%);
-        }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    }
 
-        .server-card.attacked .server-icon {
-            color: hsl(0, 85%, 60%);
-            animation: pulse 2s infinite;
-        }
+    .btn-primary {
+      background: linear-gradient(to right, #22c55e, #22c55e);
+      color: #020617;
+      box-shadow: 0 10px 28px rgba(34, 197, 94, 0.5);
+    }
 
-        .server-name {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+    }
 
-        .server-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-        }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+      opacity: 0.96;
+    }
 
-        .alert-badge {
-            position: absolute;
-            top: -0.5rem;
-            right: -0.5rem;
-            width: 1.5rem;
-            height: 1.5rem;
-            color: hsl(0, 85%, 60%);
-            animation: pulse 2s infinite;
-        }
+    .btn:active {
+      transform: translateY(0px) scale(0.98);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+      opacity: 0.9;
+    }
 
-        /* Alert System */
-        .alert-system {
-            background: hsl(220, 20%, 12%);
-            border: 2px solid hsla(0, 85%, 60%, 0.5);
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 0 30px hsla(0, 85%, 60%, 0.5);
-            margin-bottom: 2rem;
-        }
+    .hint {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #6b7280;
+    }
 
-        .alert-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .alert-live {
-            color: hsl(0, 85%, 60%);
-            font-size: 0.875rem;
-            animation: flicker 3s linear infinite;
-        }
-
-        .alerts-container {
-            max-height: 400px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .alert-item {
-            display: flex;
-            align-items: start;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            animation: slideIn 0.5s ease-out;
-        }
-
-        .alert-item.critical {
-            background: hsla(0, 85%, 60%, 0.1);
-            border: 1px solid hsla(0, 85%, 60%, 0.5);
-        }
-
-        .alert-item.warning {
-            background: hsla(30, 100%, 50%, 0.1);
-            border: 1px solid hsla(30, 100%, 50%, 0.5);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            color: hsl(180, 20%, 65%);
-            font-size: 0.875rem;
-            animation: pulse 2s infinite;
-        }
-
-        /* Animations */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            41% { opacity: 1; }
-            42% { opacity: 0.8; }
-            43% { opacity: 1; }
-            45% { opacity: 0.8; }
-            46% { opacity: 1; }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(-50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.6); }
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            h1 { font-size: 1.5rem; }
-            .alert-icon { width: 2rem; height: 2rem; }
-            .subtitle { font-size: 1rem; }
-            .attack-visualizer { height: 8rem; }
-            .container { padding: 1rem; }
-            .server-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-            .metrics-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+    @media (min-width: 480px) {
+      .btn-row {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .btn {
+        min-width: 150px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="data-stream" id="dataStream"></div>
-
-    <div class="container">
-        <header>
-            <div class="alert-title">
-                <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <h1>CRITICAL ALERT</h1>
-                <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" style="text-decoration: line-through;"/>
-                </svg>
-            </div>
-            <p class="subtitle">SERVER INFRASTRUCTURE COMPROMISED</p>
-            <div class="status-bar">
-                NETWORK STATUS: <span class="status-critical">DEGRADED</span> | 
-                SECURITY LEVEL: <span class="status-critical">CRITICAL</span>
-            </div>
-        </header>
-
-        <div class="attack-visualizer" id="attackViz">
-            <div class="attack-header">
-                <svg class="threat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                <span style="font-size: 0.875rem; font-weight: bold; color: hsl(0, 85%, 60%);">
-                    ACTIVE THREATS
-                </span>
-            </div>
-        </div>
-
-        <section>
-            <h2 class="section-title">
-                <span class="status-dot"></span>
-                NETWORK METRICS
-            </h2>
-            <div class="metrics-grid">
-                <div class="metric-card" id="bandwidthCard">
-                    <div class="metric-header">
-                        <span style="font-weight: bold; font-size: 0.875rem;">Bandwidth</span>
-                    </div>
-                    <div class="metric-value" id="bandwidth">100%</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="bandwidthBar" style="width: 100%"></div>
-                    </div>
-                </div>
-
-                <div class="metric-card" id="latencyCard">
-                    <div class="metric-header">
-                        <span style="font-weight: bold; font-size: 0.875rem;">Latency</span>
-                    </div>
-                    <div class="metric-value" id="latency">12ms</div>
-                    <div style="font-size: 0.75rem; color: hsl(142, 76%, 45%); margin-top: 0.5rem;" id="latencyStatus">NORMAL</div>
-                </div>
-
-                <div class="metric-card" id="packetLossCard">
-                    <div class="metric-header">
-                        <span style="font-weight: bold; font-size: 0.875rem;">Packet Loss</span>
-                    </div>
-                    <div class="metric-value" id="packetLoss">0%</div>
-                    <div style="font-size: 0.75rem; color: hsl(142, 76%, 45%); margin-top: 0.5rem;" id="packetLossStatus">ACCEPTABLE</div>
-                </div>
-            </div>
-        </section>
-
-        <section>
-            <h2 class="section-title">
-                <span class="status-dot"></span>
-                SERVER STATUS
-            </h2>
-            <div class="server-grid" id="serverGrid"></div>
-        </section>
-
-        <section>
-            <div class="alert-system">
-                <div class="alert-header">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <svg style="width: 1.5rem; height: 1.5rem; color: hsl(0, 85%, 60%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016zM12 9v2m0 4h.01"/>
-                        </svg>
-                        <span style="font-size: 1.125rem; font-weight: bold; color: hsl(0, 85%, 60%);">
-                            SECURITY ALERTS
-                        </span>
-                    </div>
-                    <span class="alert-live">● LIVE</span>
-                </div>
-                <div class="alerts-container" id="alertsContainer"></div>
-            </div>
-        </section>
-
-        <footer>
-            <p>INCIDENT RESPONSE TEAM NOTIFIED | CONTAINMENT PROTOCOLS ACTIVE</p>
-        </footer>
+  <!-- matrix background fake -->
+  <div class="matrix" aria-hidden="true">
+    <div class="matrix-inner">
+      01 10 01 10 01 10 11 00 10 010 110 001 101 010 011 010 110 001 101 010 011 010 110 001 101 010 011 010 110 001 101
+      010 011 010 110 001 101 010 011 010 110 001 101 010 011 010 110 001 101 010 011 010 110 001 101 010 011 010 110 001
     </div>
+  </div>
 
-    <script>
-        // Data Stream Animation
-        function createDataStream() {
-            const stream = document.getElementById('dataStream');
-            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-            const streamCount = window.innerWidth < 768 ? 8 : 15;
-            
-            for (let i = 0; i < streamCount; i++) {
-                const column = document.createElement('div');
-                column.className = 'stream-column';
-                column.style.animationDelay = `${i * 0.3}s`;
-                
-                for (let j = 0; j < 20; j++) {
-                    const char = document.createElement('span');
-                    char.textContent = characters[Math.floor(Math.random() * characters.length)];
-                    column.appendChild(char);
-                }
-                
-                stream.appendChild(column);
-            }
+  <div class="scan-lines"></div>
 
-            setInterval(() => {
-                document.querySelectorAll('.stream-column span').forEach(span => {
-                    span.textContent = characters[Math.floor(Math.random() * characters.length)];
-                });
-            }, 150);
-        }
+  <div class="wrapper">
+    <div class="card">
+      <div class="badge">
+        <span class="dot"></span>
+        Security Alert · Possible Intrusion
+      </div>
 
-        // Attack Visualizer
-        function createAttack() {
-            const viz = document.getElementById('attackViz');
-            const attack = document.createElement('div');
-            attack.className = 'attack-dot';
-            attack.style.left = `${Math.random() * 100}%`;
-            attack.style.top = `${Math.random() * 100}%`;
-            attack.innerHTML = '<svg style="width: 100%; height: 100%; color: hsl(0, 85%, 60%);" fill="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>';
-            
-            viz.appendChild(attack);
-            setTimeout(() => attack.remove(), 2000);
-        }
+      <div class="icon">
+        <div class="icon-inner">
+          <div class="lock"></div>
+          <div class="scan-bar"></div>
+        </div>
+      </div>
 
-        // Network Metrics
-        function updateMetrics() {
-            const bandwidth = Math.max(0, Math.random() * 100);
-            const latency = 12 + Math.random() * 500;
-            const packetLoss = Math.floor(Math.random() * 100);
+      <div class="code">ERROR</div>
+      <div class="title">Serangan Hacker Terdeteksi</div>
+      <div class="subtitle">SYSTEM TEMPORARILY LOCKED</div>
 
-            document.getElementById('bandwidth').textContent = `${bandwidth.toFixed(1)}%`;
-            document.getElementById('bandwidthBar').style.width = `${bandwidth}%`;
-            
-            const bandwidthCard = document.getElementById('bandwidthCard');
-            const bandwidthBar = document.getElementById('bandwidthBar');
-            if (bandwidth < 30) {
-                bandwidthCard.classList.add('critical');
-                bandwidthBar.classList.add('critical');
-            } else {
-                bandwidthCard.classList.remove('critical');
-                bandwidthBar.classList.remove('critical');
-            }
+      <p class="message">
+        Sistem mendeteksi aktivitas mencurigakan yang menyerupai serangan hacker.
+        Untuk keamanan, beberapa fungsi sementara dinonaktifkan.  
+        Silakan coba lagi setelah beberapa saat atau hubungi administrator.
+      </p>
 
-            document.getElementById('latency').textContent = `${latency.toFixed(0)}ms`;
-            const latencyStatus = document.getElementById('latencyStatus');
-            const latencyCard = document.getElementById('latencyCard');
-            if (latency > 200) {
-                latencyStatus.textContent = 'CRITICAL DELAY';
-                latencyStatus.style.color = 'hsl(30, 100%, 50%)';
-                latencyCard.classList.add('critical');
-            } else {
-                latencyStatus.textContent = 'NORMAL';
-                latencyStatus.style.color = 'hsl(142, 76%, 45%)';
-                latencyCard.classList.remove('critical');
-            }
+      <div class="log-box">
+        <div class="log-line">[ALERT] Unauthorized access attempt blocked from IP: 192.168.xxx.xxx</div>
+        <div class="log-line">[FIREWALL] Suspicious traffic pattern detected on port 443</div>
+        <div class="log-line">[SYSTEM] Critical modules switched to safe mode<span class="cursor"></span></div>
+      </div>
 
-            document.getElementById('packetLoss').textContent = `${packetLoss}%`;
-            const packetLossStatus = document.getElementById('packetLossStatus');
-            const packetLossCard = document.getElementById('packetLossCard');
-            if (packetLoss > 50) {
-                packetLossStatus.textContent = 'SEVERE LOSS';
-                packetLossStatus.style.color = 'hsl(0, 85%, 60%)';
-                packetLossCard.classList.add('critical');
-            } else {
-                packetLossStatus.textContent = 'ACCEPTABLE';
-                packetLossStatus.style.color = 'hsl(142, 76%, 45%)';
-                packetLossCard.classList.remove('critical');
-            }
-        }
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="location.reload()">
+          Coba Lagi
+        </button>
+        <button class="btn btn-secondary" onclick="window.location.href='/'">
+          Kembali ke Beranda
+        </button>
+      </div>
 
-        // Server Rack
-        const attackedServers = new Set();
-
-        function createServers() {
-            const grid = document.getElementById('serverGrid');
-            
-            for (let i = 0; i < 6; i++) {
-                const server = document.createElement('div');
-                server.className = 'server-card';
-                server.id = `server-${i}`;
-                server.innerHTML = `
-                    <svg class="server-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
-                    </svg>
-                    <p class="server-name">SERVER-${String(i + 1).padStart(2, '0')}</p>
-                    <div class="server-status">
-                        <svg style="width: 1rem; height: 1rem; color: hsl(142, 76%, 45%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
-                        </svg>
-                        <span style="font-size: 0.75rem; color: hsl(142, 76%, 45%);">ONLINE</span>
-                    </div>
-                `;
-                grid.appendChild(server);
-            }
-        }
-
-        function attackRandomServer() {
-            const serverIndex = Math.floor(Math.random() * 6);
-            const server = document.getElementById(`server-${serverIndex}`);
-            
-            if (attackedServers.has(serverIndex)) {
-                attackedServers.delete(serverIndex);
-                server.classList.remove('attacked');
-                server.querySelector('.server-status').innerHTML = `
-                    <svg style="width: 1rem; height: 1rem; color: hsl(142, 76%, 45%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
-                    </svg>
-                    <span style="font-size: 0.75rem; color: hsl(142, 76%, 45%);">ONLINE</span>
-                `;
-                const badge = server.querySelector('.alert-badge');
-                if (badge) badge.remove();
-            } else {
-                attackedServers.add(serverIndex);
-                server.classList.add('attacked');
-                server.querySelector('.server-status').innerHTML = `
-                    <svg style="width: 1rem; height: 1rem; color: hsl(0, 85%, 60%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" style="text-decoration: line-through;"/>
-                    </svg>
-                    <span style="font-size: 0.75rem; color: hsl(0, 85%, 60%);">COMPROMISED</span>
-                `;
-                server.innerHTML += `
-                    <svg class="alert-badge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
-                ` + server.innerHTML;
-            }
-        }
-
-        // Alert System
-        const alertMessages = [
-            { type: 'critical', message: 'DDOS attack detected on gateway server' },
-            { type: 'warning', message: 'Unusual traffic pattern from IP 45.142.*.**' },
-            { type: 'critical', message: 'Multiple failed authentication attempts' },
-            { type: 'warning', message: 'Database connection timeout - retry in progress' },
-            { type: 'critical', message: 'Firewall rules breached - isolating subnet' },
-            { type: 'warning', message: 'CPU usage at 98% on SERVER-03' },
-        ];
-
-        function addAlert() {
-            const container = document.getElementById('alertsContainer');
-            const alert = alertMessages[Math.floor(Math.random() * alertMessages.length)];
-            const time = new Date().toLocaleTimeString();
-            
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert-item ${alert.type}`;
-            alertDiv.innerHTML = `
-                <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: 0.125rem; color: ${alert.type === 'critical' ? 'hsl(0, 85%, 60%)' : 'hsl(30, 100%, 50%)'};" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                </svg>
-                <p style="font-size: 0.875rem; color: ${alert.type === 'critical' ? 'hsl(0, 85%, 60%)' : 'hsl(30, 100%, 50%)'};">
-                    [${time}] ${alert.message}
-                </p>
-            `;
-            
-            container.insertBefore(alertDiv, container.firstChild);
-            
-            if (container.children.length > 5) {
-                container.removeChild(container.lastChild);
-            }
-        }
-
-        // Initialize
-        createDataStream();
-        createServers();
-
-        // Start animations
-        setInterval(createAttack, 800);
-        setInterval(updateMetrics, 2000);
-        setInterval(attackRandomServer, 1500);
-        setInterval(addAlert, 3000);
-
-        // Initial updates
-        updateMetrics();
-        addAlert();
-    </script>
+      <div class="hint">
+        Kamu bisa ganti teks IP, log, dan tombol sesuai sistem kamu sendiri.
+      </div>
+    </div>
+  </div>
 </body>
 </html>
